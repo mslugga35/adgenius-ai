@@ -1,0 +1,5 @@
+{
+  "name": "Ad Mockup Generator",
+  "description": "Upload a product picture and this app will use Gemini to insert it into various ad formats like billboards, magazines, and more.",
+  "requestFramePermissions": []
+}
