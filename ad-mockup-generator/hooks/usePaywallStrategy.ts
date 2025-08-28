@@ -268,6 +268,43 @@ export const usePaywallStrategy = () => {
     return false;
   }, [checkDailyLimit, checkExportQuality, checkWatermarkRemoval, checkTemplateLock, checkTimeInvestment, checkProgressWarning]);
 
+  // Helper function to check if paywall should trigger
+  const checkPaywallTrigger = useCallback((trigger: PaywallTrigger): boolean => {
+    switch (trigger) {
+      case 'daily_limit_reached':
+        return checkDailyLimit();
+      case 'export_quality_locked':
+        return plan === 'free';
+      case 'watermark_removal':
+        return checkWatermarkRemoval();
+      case 'template_locked':
+        return plan === 'free';
+      case 'batch_processing':
+        return plan === 'free' || plan === 'starter';
+      case 'first_mockup_created':
+        return dailyMockups === 1 && plan === 'free';
+      case 'third_mockup_warning':
+        return dailyMockups === 2 && plan === 'free';
+      default:
+        return false;
+    }
+  }, [checkDailyLimit, checkWatermarkRemoval, plan, dailyMockups]);
+
+  // Helper function to get paywall message
+  const getPaywallMessage = useCallback((trigger: PaywallTrigger): string => {
+    const messages = {
+      daily_limit_reached: "🎯 You've used all 3 free mockups today! Upgrade to create 20+ daily.",
+      export_quality_locked: "🔒 HD & 4K exports are Pro features. Upgrade to remove watermarks!",
+      watermark_removal: "💎 Remove watermarks and export in stunning quality with Pro!",
+      batch_processing: "⚡ Process multiple mockups at once with our Pro plan!",
+      template_locked: "🎨 Unlock all premium templates with Pro access!",
+      api_access: "🔌 API access is available for Business plans!",
+      first_mockup_created: "✨ Love what you created? Upgrade for unlimited mockups!",
+      third_mockup_warning: "⚠️ Last free mockup today! Upgrade to keep creating."
+    };
+    return messages[trigger] || "Upgrade to unlock this feature!";
+  }, []);
+
   return {
     isPaywallOpen,
     currentTrigger,
@@ -275,6 +312,8 @@ export const usePaywallStrategy = () => {
     setIsPaywallOpen,
     executePaywallStrategy,
     getPricingStrategy,
+    checkPaywallTrigger,
+    getPaywallMessage,
     
     // Direct trigger methods for testing
     triggers: {

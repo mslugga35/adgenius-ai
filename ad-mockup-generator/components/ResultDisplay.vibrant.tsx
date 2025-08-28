@@ -165,3 +165,38 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
     </div>
   );
 };
+
+// Add animation styles
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes slide-down {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+  
+  .animate-slide-down {
+    animation: slide-down 0.5s ease-out;
+  }
+`;
+document.head.appendChild(style);
